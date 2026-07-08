@@ -1,33 +1,292 @@
 # ⚽ Predictor Mundial FIFA 2026
 
-## Descripción general
+> Pipeline de Machine Learning para predecir las fases eliminatorias de la Copa Mundial FIFA 2026 mediante un flujo progresivo basado en resultados oficiales.
 
-Este proyecto implementa un flujo de predicción progresiva para las fases eliminatorias del Mundial FIFA 2026. La metodología conserva el enfoque original:
+---
 
-- Entrenamiento con resultados históricos de los Mundiales 2014, 2018 y 2022.
-- Uso de tres modelos de clasificación: Logistic Regression, Random Forest y XGBoost.
-- Uso de dos regresores para estimar el marcador antes de los penales.
-- Predicción fase por fase, usando únicamente resultados reales para resolver los partidos de fases posteriores.
-- Actualización automática de reportes y validación cuando ya existen resultados oficiales.
+# 📖 Descripción
 
-## Arquitectura
+**Predictor Mundial FIFA 2026** es un proyecto de Ciencia de Datos que automatiza la predicción de las fases eliminatorias del Mundial utilizando modelos de Machine Learning entrenados con información histórica de las ediciones **2014, 2018 y 2022**.
 
-- [src/config.py](src/config.py): configuración central, rutas y listas de features.
-- [src/data_loader.py](src/data_loader.py): carga de datos y resolución del bracket.
-- [src/feature_engineering.py](src/feature_engineering.py): ingeniería de features para entrenamiento y predicción.
-- [src/models.py](src/models.py): construcción de clasificadores y regresores.
-- [src/pipeline.py](src/pipeline.py): orquestación del flujo de predicción y validación.
-- [scripts/run_stage.py](scripts/run_stage.py): punto de entrada CLI para ejecutar una fase.
+A diferencia de un simulador tradicional, este proyecto **no predice todo el torneo desde el inicio**. El pipeline avanza conforme se disputan los partidos oficiales, garantizando que cada nueva predicción utilice únicamente información real del torneo.
 
-## Ejecución
+---
+
+# ✨ Características
+
+* ⚽ Predicción progresiva de todas las fases eliminatorias.
+* 🤖 Modelos de clasificación para estimar el ganador.
+* 📈 Modelos de regresión para estimar el marcador.
+* 🔄 Actualización automática conforme se publican los resultados oficiales.
+* 📊 Evaluación automática del rendimiento de los modelos.
+* 📑 Generación de reportes y métricas.
+* 🖥 Dashboard interactivo desarrollado con Streamlit.
+* ✅ Pipeline completamente reproducible.
+
+---
+
+# 🧠 Modelos utilizados
+
+## Clasificación
+
+* Logistic Regression
+* Random Forest
+* XGBoost
+
+Estos modelos predicen qué selección tiene mayor probabilidad de avanzar.
+
+## Regresión
+
+Modelos de regresión utilizados para estimar el marcador esperado antes de una posible definición por penales.
+
+---
+
+# 📂 Estructura del proyecto
+
+```text
+mundial2026_predictor/
+│
+├── dashboard/
+├── data/
+├── outputs/
+│   ├── history/
+│   ├── reports/
+│   └── logs/
+├── saved_models/
+├── scripts/
+├── src/
+├── tests/
+├── requirements.txt
+└── README.md
+```
+
+---
+
+# 🚀 Flujo de ejecución
+
+El proyecto sigue un flujo secuencial. **No es posible ejecutar una fase si la anterior aún no ha sido validada con resultados oficiales.**
+
+## 🥇 Fase 1 — Dieciseisavos de Final (R32)
+
+Genera la predicción inicial del torneo.
 
 ```bash
 python scripts/run_stage.py R32
+```
+
+Al finalizar los partidos oficiales:
+
+```bash
+python scripts/update_stage.py R32
+```
+
+Luego continúa con:
+
+```bash
 python scripts/run_stage.py R16
 ```
 
-## Pruebas
+---
+
+## 🥈 Fase 2 — Octavos de Final (R16)
+
+Las predicciones utilizan exclusivamente los equipos clasificados oficialmente desde R32.
 
 ```bash
-python -m pytest -q
+python scripts/run_stage.py R16
 ```
+
+Cuando finalicen los partidos:
+
+```bash
+python scripts/update_stage.py R16
+```
+
+Continuar:
+
+```bash
+python scripts/run_stage.py QF
+```
+
+---
+
+## 🥉 Fase 3 — Cuartos de Final (QF)
+
+El pipeline vuelve a reconstruir el cuadro utilizando únicamente los resultados oficiales de Octavos.
+
+```bash
+python scripts/run_stage.py QF
+```
+
+Después:
+
+```bash
+python scripts/update_stage.py QF
+```
+
+Continuar:
+
+```bash
+python scripts/run_stage.py SF
+```
+
+---
+
+## 🏅 Fase 4 — Semifinales (SF)
+
+```bash
+python scripts/run_stage.py SF
+```
+
+Cuando existan resultados oficiales:
+
+```bash
+python scripts/update_stage.py SF
+```
+
+Continuar:
+
+```bash
+python scripts/run_stage.py FINAL
+```
+
+---
+
+## 🏆 Fase 5 — Final
+
+```bash
+python scripts/run_stage.py FINAL
+```
+
+Después del partido:
+
+```bash
+python scripts/update_stage.py FINAL
+```
+
+El sistema genera el reporte final del torneo y las métricas globales.
+
+---
+
+# 🔒 Validación automática
+
+El pipeline impide avanzar si una fase anterior no ha sido evaluada.
+
+Por ejemplo:
+
+```text
+[DETENIDO] La fase R16 aún no ha sido evaluada.
+
+Ejecute primero:
+
+python scripts/update_stage.py R16
+```
+
+Este mecanismo garantiza que las predicciones siempre utilicen resultados oficiales y que el cuadro eliminatorio permanezca consistente durante todo el torneo.
+
+---
+
+# 📊 Archivos generados
+
+Después de cada fase se generan automáticamente:
+
+```text
+outputs/
+
+├── reports/
+│   ├── reporte_R32.json
+│   ├── reporte_R16.json
+│   ├── reporte_QF.json
+│   ├── reporte_SF.json
+│   └── reporte_FINAL.json
+│
+├── history/
+│   ├── metrics_history.csv
+│   └── prediction_history.csv
+│
+└── logs/
+```
+
+---
+
+# 🧪 Ejecutar pruebas
+
+```bash
+pytest -q
+```
+
+---
+
+# 🛠 Tecnologías
+
+* Python
+* Pandas
+* NumPy
+* Scikit-learn
+* XGBoost
+* Streamlit
+* Plotly
+* Joblib
+* Pytest
+
+---
+
+# 📈 Flujo del proyecto
+
+```text
+Resultados históricos (2014, 2018 y 2022)
+                │
+                ▼
+     Ingeniería de características
+                │
+                ▼
+ Entrenamiento de modelos ML
+                │
+                ▼
+Predicción de Dieciseisavos (R32)
+                │
+                ▼
+Resultados oficiales
+                │
+                ▼
+ Validación (update_stage.py)
+                │
+                ▼
+Predicción de Octavos (R16)
+                │
+                ▼
+Resultados oficiales
+                │
+                ▼
+ Validación (update_stage.py)
+                │
+                ▼
+Predicción de Cuartos (QF)
+                │
+                ▼
+Resultados oficiales
+                │
+                ▼
+Predicción de Semifinales (SF)
+                │
+                ▼
+Resultados oficiales
+                │
+                ▼
+Predicción de la Final
+                │
+                ▼
+Reporte final y métricas
+```
+
+---
+
+# 🎯 Objetivo
+
+Desarrollar un sistema reproducible de predicción deportiva basado en Machine Learning que permita simular y evaluar las fases eliminatorias de la Copa Mundial FIFA 2026 utilizando únicamente información oficial disponible en cada etapa del torneo.
+
+---
+
+# 📄 Licencia
+
+Este proyecto fue desarrollado con fines educativos y de investigación en Ciencia de Datos y Machine Learning aplicado al análisis deportivo.

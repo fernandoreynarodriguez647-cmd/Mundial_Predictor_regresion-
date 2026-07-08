@@ -1,2 +1,3 @@
 stage,matches,hits,misses,accuracy
 R16,8,6,2,0.75
+R32,16,11,5,0.6875
