@@ -2,110 +2,53 @@ from pathlib import Path
 import json
 import streamlit as st
 
-
-from components.cards import metric_card
-
-
-
 st.title("📊 Resumen General")
 
+reports_dir = Path("outputs/reports")
 
-reports_dir = Path(
-    "outputs/reports"
-)
-
-
-reports = sorted(
-    reports_dir.glob(
-        "reporte_*.json"
-    )
-)
-
+reports = sorted(reports_dir.glob("reporte_*.json"))
 
 if not reports:
-
-    st.warning(
-        "No existen reportes generados"
-    )
-
+    st.warning("No existen reportes.")
     st.stop()
-
-
 
 latest = reports[-1]
 
+with open(latest, encoding="utf-8") as f:
+    report = json.load(f)
 
-with open(
-    latest,
-    encoding="utf-8"
-) as f:
+st.success(f"Reporte cargado: {latest.name}")
 
-    report=json.load(f)
-
-
-
-st.success(
-    f"Última actualización: {latest.name}"
-)
-
-
-
-metrics = report.get(
-    "best_classifier_metrics",
-    {}
-)
-
-
-
-col1,col2,col3,col4 = st.columns(4)
-
-
+col1, col2 = st.columns(2)
 
 with col1:
+    st.metric("Fase", report.get("stage", "-"))
 
-    metric_card(
-        "Modelo",
+    st.metric(
+        "Partidos",
         report.get(
-            "best_classifier",
-            "-"
-        ),
-        "🤖"
+            "prediction_matches",
+            len(report.get("matches", []))
+        )
     )
-
-
 
 with col2:
-
-    metric_card(
+    st.metric(
         "Accuracy",
-        metrics.get(
-            "accuracy",
-            "-"
-        ),
-        "📈"
+        f"{report.get('prediction_accuracy',0):.2%}"
     )
 
-
-
-with col3:
-
-    metric_card(
-        "Partidos",
-        len(
-            report.get(
-                "matches",
-                []
-            )
-        ),
-        "⚽"
+    st.metric(
+        "Aciertos",
+        report.get("prediction_hits",0)
     )
 
+st.divider()
 
+st.subheader("Modelo")
 
-with col4:
+st.info(report.get("best_classifier","Ensemble"))
 
-    metric_card(
-        "Fase",
-        "R32",
-        "🏆"
-    )
+st.subheader("Siguiente fase")
+
+st.success(report.get("next_stage","-"))

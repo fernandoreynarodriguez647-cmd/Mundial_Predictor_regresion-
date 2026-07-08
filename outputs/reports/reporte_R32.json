@@ -589,5 +589,11 @@
     "xgboost": 0.367
   },
   "metrics_history_file": "outputs\\history\\metrics_history.csv",
-  "prediction_history_file": "outputs\\history\\predictions_history.csv"
+  "prediction_accuracy": 0.6875,
+  "prediction_hits": 11,
+  "prediction_misses": 5,
+  "prediction_matches": 16,
+  "comparison_file": "C:\\Users\\HP\\Documents\\mundial2026_predictor\\data\\processed\\R32_comparison.csv",
+  "winner_file": "C:\\Users\\HP\\Documents\\mundial2026_predictor\\data\\processed\\R32_winners.csv",
+  "next_stage": "R16"
 }

@@ -3,111 +3,59 @@ import json
 import streamlit as st
 import pandas as pd
 
-
 st.title("⚽ Predicciones del Mundial")
 
-
-# Buscar reporte más reciente
-
-reports_dir = Path(
-    "outputs/reports"
-)
-
-
-reports = sorted(
-    reports_dir.glob(
-        "reporte_*.json"
-    )
-)
-
+reports_dir = Path("outputs/reports")
+reports = sorted(reports_dir.glob("reporte_*.json"))
 
 if not reports:
-
-    st.warning(
-        "No existen reportes."
-    )
-
+    st.warning("No existen reportes.")
     st.stop()
-
 
 latest = reports[-1]
 
+with open(latest, encoding="utf-8") as f:
+    report = json.load(f)
 
-with open(
-    latest,
-    encoding="utf-8"
-) as f:
+stage = report.get("stage", "-")
 
-    report=json.load(f)
+st.success(f"Fase actual: {stage}")
 
-
-
-stage = report.get(
-    "stage",
-    "-"
-)
-
-
-st.success(
-    f"Fase actual: {stage}"
-)
-
-
-
-# Convertir partidos a tabla
-
-
-rows=[]
-
+rows = []
 
 for match in report["matches"]:
 
     score = match["predicted_score_90"]
 
-    actual = match["actual_result"]["score_90"]
+    fila = {
+        "Partido": f'{match["team_a"]} vs {match["team_b"]}',
+        "Marcador Predicho": f'{score["a"]}-{score["b"]}',
+        "Ganador Predicho": match["predicted_winner"],
+        "Probabilidad": f'{match["advance_probability_avg_a"]*100:.1f}%'
+    }
 
+    if "actual_result" in match:
 
-    rows.append({
+        actual = match["actual_result"]["score_90"]
 
-        "Partido":
-        f'{match["team_a"]} vs {match["team_b"]}',
+        fila["Resultado Real"] = f'{actual["a"]}-{actual["b"]}'
 
+        fila["Estado"] = (
+            "✅ Acierto"
+            if match.get("hit", False)
+            else "❌ Fallo"
+        )
 
-        "Marcador Predicho":
-        f'{score["a"]} - {score["b"]}',
+    rows.append(fila)
 
-
-        "Ganador Predicho":
-        match["predicted_winner"],
-
-
-        "Probabilidad":
-        f'{match["advance_probability_avg_a"]*100:.1f}%',
-
-
-        "Resultado Real":
-        f'{actual["a"]} - {actual["b"]}',
-
-
-        "Estado":
-        "✅ Acierto"
-        if match["hit"]
-        else
-        "❌ Fallo"
-
-    })
-
-
-df=pd.DataFrame(rows)
-
-
+df = pd.DataFrame(rows)
 
 st.dataframe(
-
     df,
-
     use_container_width=True,
-
     hide_index=True
+)
 
+st.bar_chart(
+    df.set_index("Partido")["Probabilidad"].str.replace("%", "").astype(float)
 )

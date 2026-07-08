@@ -199,12 +199,26 @@ def main():
     print(f"\nReporte completo guardado en:")
     print(out_path)
     
-    if "prediction_history_file" in report:
+    # ====================================================
+    # SIGUIENTE PASO
+    # ====================================================
 
-     print(
-        f"Historial de predicciones: "
-        f"{report['prediction_history_file']}"
-     )
+    if report.get("next_stage"):
+
+     print("\n==========================================")
+     print(f"✓ Predicción de {stage} finalizada.")
+     print(f"✓ Siguiente fase : {report['next_stage']}")
+     print("\nAhora debes:")
+     print("1. Esperar los resultados oficiales.")
+     print("2. Actualizar data/raw/official_results.csv")
+     print(f"3. Ejecutar:")
+     print(f"   python scripts/run_stage.py {report['next_stage']}")
+     
+     print("\n========= RESULTADOS DEL MODELO =========")
+     print(f"Aciertos : {report['prediction_hits']}")
+     print(f"Fallos   : {report['prediction_misses']}")
+     print(f"Accuracy : {report['prediction_accuracy']:.2%}")
+     print("==========================================")
 
 
 if __name__ == "__main__":

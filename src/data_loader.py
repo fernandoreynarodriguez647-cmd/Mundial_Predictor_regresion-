@@ -5,9 +5,7 @@ fallos silenciosos en la pipeline.
 """
 import json
 from pathlib import Path
-
 import pandas as pd
-
 from src import config as cfg
 
 
@@ -42,9 +40,22 @@ def load_historical_h2h() -> pd.DataFrame:
 
 
 def load_matches_played() -> pd.DataFrame:
-    """Resultados reales YA jugados del Mundial 2026 (R32 completo + R16 parcial)."""
-    return _read_csv(cfg.DATA_RAW / "matches_played.csv")
+    """
+    Carga los resultados oficiales del Mundial y verifica
+    que no existan partidos duplicados.
+    """
 
+    df = _read_csv(cfg.DATA_RAW / "official_results.csv")
+
+    duplicados = df[df["match_id"].duplicated()]
+
+    if not duplicados.empty:
+        ids = ", ".join(duplicados["match_id"].tolist())
+        raise RuntimeError(
+            f"Hay partidos duplicados en official_results.csv: {ids}"
+        )
+
+    return df
 
 def load_bracket_map() -> dict:
     return _read_json(cfg.DATA_RAW / "bracket_map.json")
@@ -67,16 +78,25 @@ def resolve_slot(slot: str, real_results: pd.DataFrame) -> str:
         return row["winner_final"]
     return row["team_b"] if row["winner_final"] == row["team_a"] else row["team_a"]
 
-
 def get_stage_fixtures(stage: str, bracket_map: dict, real_results: pd.DataFrame) -> list:
-    """Devuelve los partidos de una fase con los equipos ya resueltos por resultados reales."""
+    """
+    Genera automáticamente los enfrentamientos de una fase
+    utilizando únicamente los resultados oficiales.
+    """
+
     cfg.validate_stage(stage)
+
     if stage not in bracket_map:
         raise KeyError(f"No existe la fase '{stage}' en el bracket map")
 
     fixtures = []
+
     for match in bracket_map[stage]:
-        team_a = resolve_slot(match["team_a"], real_results)
-        team_b = resolve_slot(match["team_b"], real_results)
-        fixtures.append({**match, "team_a": team_a, "team_b": team_b})
+
+        fixtures.append({
+            **match,
+            "team_a": resolve_slot(match["team_a"], real_results),
+            "team_b": resolve_slot(match["team_b"], real_results),
+        })
+
     return fixtures

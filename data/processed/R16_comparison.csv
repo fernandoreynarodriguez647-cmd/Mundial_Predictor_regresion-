@@ -1,0 +1,9 @@
+match_id,team_a,team_b,predicted,official,correct
+M89,PAR,FRA,FRA,FRA,True
+M90,CAN,MAR,MAR,MAR,True
+M91,BRA,NOR,BRA,NOR,False
+M92,MEX,ENG,ENG,ENG,True
+M93,POR,ESP,POR,ESP,False
+M94,USA,BEL,BEL,BEL,True
+M95,ARG,EGY,ARG,ARG,True
+M96,SUI,COL,SUI,SUI,True

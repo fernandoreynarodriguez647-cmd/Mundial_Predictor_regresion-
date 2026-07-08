@@ -7,12 +7,19 @@ se predicen cuando sus equipos ya vienen definidos por resultados reales.
 import numpy as np
 import pandas as pd
 
+from pathlib import Path
 from src import config as cfg, data_loader as dl, evaluation as ev, feature_engineering as fe, models as mdl
 from src.logging_utils import get_logger
 from src import model_manager
 from src import metrics_history as mh
 from src import prediction_history as ph
 from src import explainability
+from src.results_manager import ResultsManager
+from src.prediction_validator import validate_predictions
+from src.stage_generator import generate_next_stage
+from src.tournament_manager import advance_tournament
+from src.bracket_generator import generate_stage
+
 
 logger = get_logger(__name__)
 
@@ -215,25 +222,11 @@ def run_stage(stage: str, validate: bool = True) -> dict:
     reg_b = models["score_models"]["team_b"]
     penalty_model = models["penalty_model"]
 
-    # -----------------------------------------------------
-    
-    predicted_file = cfg.DATA_PROCESSED / f"{stage}_predicted_fixtures.csv"
-
-    if predicted_file.exists():
-
-     logger.info(
-        "Usando fixtures predichos para %s",
-        stage
-     )
-
-     fixtures = pd.read_csv(predicted_file).to_dict("records")
-
-    else:
-
-     fixtures = dl.get_stage_fixtures(
-        stage,
-        bracket_map,
-        real_results,
+    # Obtener los enfrentamientos oficiales de la fase
+    fixtures = generate_stage(
+     stage,
+     bracket_map,
+     real_results,
     )
 
 
@@ -397,18 +390,89 @@ def run_stage(stage: str, validate: bool = True) -> dict:
      report["matches"]
     )
 
-    report["prediction_history_file"] = str(prediction_file)
-    
+    summary, file = validate_predictions(stage, report)
+
+    report["prediction_accuracy"] = round(summary["accuracy"], 4)
+
+    report["prediction_hits"] = summary["hits"]
+
+    report["prediction_misses"] = summary["misses"]
+
+    report["prediction_matches"] = summary["matches"]
+
+    report["comparison_file"] = str(file)
+
+    report["comparison_file"] = str(file)
+
+    winner_file = generate_next_stage(stage)
+
+    report["winner_file"] = str(winner_file)
+
+    next_stage = advance_tournament(stage)
+
+    report["next_stage"] = next_stage
+
+    print(f"\n========== RESUMEN ==========")
+    print(f"Fase actual      : {stage}")
+    print(f"Siguiente fase   : {next_stage}")
+    print(f"Accuracy         : {report['prediction_accuracy']:.2%}")
+    print(f"=============================\n")
+
     return report
-    
+ 
 def advance_to_next_stage_guard(stage: str, next_stage: str):
-    """Impide predecir una fase posterior sin resultados reales para todos sus partidos."""
+    """
+    Impide avanzar a la siguiente fase si:
+
+    1. No existen todos los resultados oficiales.
+    2. La fase anterior aún no ha sido evaluada con update_stage.py.
+    """
+
+    # =====================================================
+    # Verificar que existan los resultados oficiales
+    # =====================================================
+
     bracket_map = dl.load_bracket_map()
     real_results = dl.load_matches_played()
+
     try:
         dl.get_stage_fixtures(next_stage, bracket_map, real_results)
-    except RuntimeError as error:
-        raise RuntimeError(f"No se puede avanzar de {stage} a {next_stage} todavía: {error}") from error
 
-    logger.info("Todos los partidos de %s están resueltos con resultados reales", next_stage)
-    print(f"[ok] Todos los partidos de {next_stage} están resueltos con resultados reales. Se puede predecir.")
+    except RuntimeError as error:
+
+        raise RuntimeError(
+            f"No se puede avanzar de {stage} a {next_stage} todavía: {error}"
+        ) from error
+
+    # =====================================================
+    # Verificar que la fase anterior fue evaluada
+    # =====================================================
+
+    history_file = cfg.OUTPUTS / "prediction_history.csv"
+
+    if not history_file.exists():
+
+        raise RuntimeError(
+            f"No existe prediction_history.csv.\n"
+            f"Ejecute primero:\n"
+            f"python scripts/update_stage.py {stage}"
+        )
+
+    history = pd.read_csv(history_file)
+
+    if stage not in history["stage"].values:
+
+        raise RuntimeError(
+            f"La fase {stage} aún no ha sido evaluada.\n"
+            f"Ejecute primero:\n"
+            f"python scripts/update_stage.py {stage}"
+        )
+
+    logger.info(
+        "La fase %s fue evaluada correctamente. Se habilita %s.",
+        stage,
+        next_stage,
+    )
+
+    print(f"[OK] La fase {stage} fue evaluada.")
+    print(f"[OK] Se habilita la predicción de {next_stage}.")
