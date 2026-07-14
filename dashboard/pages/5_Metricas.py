@@ -30,7 +30,11 @@ df = pd.read_csv(
     metrics_file
 )
 
-
+required_cols = {"date", "stage", "model", "accuracy", "f1", "mae_score", "rmse_score"}
+missing = required_cols - set(df.columns)
+if missing:
+    st.error(f"Faltan columnas requeridas en metrics_history.csv: {', '.join(missing)}")
+    st.stop()
 
 # Convertir fecha
 
@@ -89,7 +93,9 @@ filtered = df[
 
 ]
 
-
+if filtered.empty:
+    st.warning("No hay datos con los filtros seleccionados.")
+    st.stop()
 
 # ---------------------------
 # Tarjetas resumen

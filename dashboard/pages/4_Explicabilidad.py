@@ -116,7 +116,9 @@ df = pd.DataFrame(
     factors
 )
 
-
+if "importance" not in df.columns or "feature" not in df.columns:
+    st.warning("Los factores no tienen la estructura esperada (importance/feature).")
+    st.stop()
 
 df = df.sort_values(
     "importance"

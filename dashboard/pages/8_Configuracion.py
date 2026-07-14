@@ -72,7 +72,7 @@ paths = {
 
 
 "Modelos":
-"models",
+"saved_models",
 
 
 "Datos":

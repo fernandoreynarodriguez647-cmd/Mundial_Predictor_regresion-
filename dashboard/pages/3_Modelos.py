@@ -102,7 +102,9 @@ for model, metrics in summary.items():
 
 df=pd.DataFrame(data)
 
-
+if df.empty:
+    st.warning("No hay métricas de validación disponibles en el reporte.")
+    st.stop()
 
 # Mostrar tabla
 

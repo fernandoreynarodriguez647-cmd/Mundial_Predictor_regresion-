@@ -30,6 +30,12 @@ df = pd.read_csv(history_file)
 
 
 
+required_cols = {"date", "stage", "team_a", "team_b", "predicted_score_a", "predicted_score_b", "probability"}
+missing = required_cols - set(df.columns)
+if missing:
+    st.error(f"Faltan columnas requeridas en predictions_history.csv: {', '.join(missing)}")
+    st.stop()
+
 df["date"] = pd.to_datetime(
     df["date"]
 )
@@ -46,6 +52,10 @@ latest = df["date"].max()
 latest_data = df[
     df["date"] == latest
 ]
+
+if latest_data.empty:
+    st.warning("No hay datos disponibles.")
+    st.stop()
 
 
 
@@ -203,7 +213,7 @@ show["resultado_real"] = (
 
 show["probability"] = (
 
-    show["probability"]*100
+    show.get("probability", 0)*100
 
 ).round(1).astype(str)+"%"
 

@@ -14,9 +14,7 @@ from src import model_manager
 from src import metrics_history as mh
 from src import prediction_history as ph
 from src import explainability
-from src.results_manager import ResultsManager
 from src.prediction_validator import validate_predictions
-from src.stage_generator import generate_next_stage
 from src.tournament_manager import advance_tournament
 from src.bracket_generator import generate_stage
 
@@ -31,7 +29,7 @@ def _load_runtime_inputs() -> tuple:
     h2h_df = dl.load_historical_h2h()
     historical_df = dl.load_historical_matches()
     bracket_map = dl.load_bracket_map()
-    real_results = dl.load_matches_played()
+    real_results = dl.load_official_results()
     return teams_df, players_df, h2h_df, historical_df, bracket_map, real_results
 
 
@@ -402,12 +400,6 @@ def run_stage(stage: str, validate: bool = True) -> dict:
 
     report["comparison_file"] = str(file)
 
-    report["comparison_file"] = str(file)
-
-    winner_file = generate_next_stage(stage)
-
-    report["winner_file"] = str(winner_file)
-
     next_stage = advance_tournament(stage)
 
     report["next_stage"] = next_stage
@@ -433,7 +425,7 @@ def advance_to_next_stage_guard(stage: str, next_stage: str):
     # =====================================================
 
     bracket_map = dl.load_bracket_map()
-    real_results = dl.load_matches_played()
+    real_results = dl.load_official_results()
 
     try:
         dl.get_stage_fixtures(next_stage, bracket_map, real_results)

@@ -39,7 +39,7 @@ def load_historical_h2h() -> pd.DataFrame:
     return _read_csv(cfg.DATA_RAW / "historical_h2h.csv")
 
 
-def load_matches_played() -> pd.DataFrame:
+def load_official_results() -> pd.DataFrame:
     """
     Carga los resultados oficiales del Mundial y verifica
     que no existan partidos duplicados.

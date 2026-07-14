@@ -47,7 +47,7 @@ for report_file in reports:
 
 
 
-    stage=data["stage"]
+    stage=data.get("stage","?")
 
 
     st.divider()
@@ -59,12 +59,12 @@ for report_file in reports:
 
 
 
-    for match in data["matches"]:
+    for match in data.get("matches", []):
 
 
-        team_a = match["team_a"]
+        team_a = match.get("team_a","?")
 
-        team_b = match["team_b"]
+        team_b = match.get("team_b","?")
 
 
         score = match.get(

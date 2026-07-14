@@ -28,4 +28,3 @@ openpyxl
 # Utilities
 python-dateutil
 pytz
-streamlit

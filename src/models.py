@@ -144,9 +144,6 @@ def build_score_regressors() -> tuple:
             max_depth=3,
             learning_rate=0.08,
             subsample=0.85,
-            colsample_bytree=0.85,
-            reg_alpha=0.10,
-            reg_lambda=1.2,
             loss="squared_error",
             random_state=cfg.RANDOM_STATE,
         )

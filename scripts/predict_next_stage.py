@@ -119,7 +119,7 @@ def main(stage):
             )
 
         
-            print("\nEjecutando modelo...\n")
+    print("\nEjecutando modelo...\n")
 
     predicted_fixtures = load_predicted_fixtures(stage)
 
