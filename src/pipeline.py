@@ -368,9 +368,6 @@ def run_stage(stage: str, validate: bool = True) -> dict:
     for k, v in model_weights.items()
     }
     
-    history_file = None
-    best = None 
-    
     if validate and "validation_summary" in report:
 
      history_file = mh.save_metrics_history(

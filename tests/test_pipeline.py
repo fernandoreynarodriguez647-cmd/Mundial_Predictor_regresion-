@@ -6,6 +6,7 @@ from src import pipeline
 def test_assemble_report_includes_match_entries():
     fixtures = [{"match_id": "M1", "team_a": "A", "team_b": "B"}]
     clf_results = {"logreg": [0.75], "random_forest": [0.6], "xgboost": [0.8]}
+    model_weights = {"logreg": 1/3, "random_forest": 1/3, "xgboost": 1/3}
     report = pipeline.assemble_report(
         "R32",
         fixtures,
@@ -13,6 +14,7 @@ def test_assemble_report_includes_match_entries():
         score_a=[2],
         score_b=[1],
         pen_proba=[0.2],
+        model_weights=model_weights,
     )
 
     assert report["stage"] == "R32"
