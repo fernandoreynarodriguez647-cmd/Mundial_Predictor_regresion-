@@ -1,0 +1,160 @@
+{
+  "stage": "SF",
+  "matches": [
+    {
+      "match_id": "M101",
+      "team_a": "FRA",
+      "team_b": "ESP",
+      "predicted_score_90": {
+        "a": 1,
+        "b": 1
+      },
+      "advance_probability": {
+        "logreg": 0.998,
+        "random_forest": 0.68,
+        "xgboost": 0.952
+      },
+      "advance_probability_avg_a": 0.876,
+      "penalty_scenario_probability": 0.994,
+      "predicted_winner": "FRA"
+    },
+    {
+      "match_id": "M102",
+      "team_a": "ENG",
+      "team_b": "ARG",
+      "predicted_score_90": {
+        "a": 1,
+        "b": 1
+      },
+      "advance_probability": {
+        "logreg": 0.108,
+        "random_forest": 0.18,
+        "xgboost": 0.298
+      },
+      "advance_probability_avg_a": 0.195,
+      "penalty_scenario_probability": 0.319,
+      "predicted_winner": "ARG"
+    }
+  ],
+  "n_matches_total": 2,
+  "n_matches_validated": 0,
+  "validation_note": "Ningún partido de esta fase tiene resultado real todavía; todas las predicciones están pendientes de confirmación.",
+  "top_features": {
+    "logreg": [
+      [
+        "ko_stage_historical_win_rate_b",
+        -1.6007
+      ],
+      [
+        "ko_stage_historical_win_rate_a",
+        0.8772
+      ],
+      [
+        "goals_against_group_diff",
+        0.8591
+      ],
+      [
+        "wc_best_stage_diff",
+        0.5388
+      ],
+      [
+        "key_players_avg_age_diff",
+        0.5328
+      ],
+      [
+        "stage_ordinal",
+        0.4679
+      ],
+      [
+        "group_position_b",
+        0.4489
+      ],
+      [
+        "key_players_prev_wc_goals_diff",
+        0.4485
+      ]
+    ],
+    "random_forest": [
+      [
+        "key_players_prev_wc_goals_diff",
+        0.1524
+      ],
+      [
+        "ko_stage_historical_win_rate_b",
+        0.1215
+      ],
+      [
+        "fifa_ranking_pos_diff",
+        0.1187
+      ],
+      [
+        "fifa_ranking_pts_diff",
+        0.0999
+      ],
+      [
+        "ko_stage_historical_win_rate_a",
+        0.0585
+      ],
+      [
+        "key_players_avg_age_diff",
+        0.0564
+      ],
+      [
+        "wc_best_stage_diff",
+        0.0555
+      ],
+      [
+        "stage_ordinal",
+        0.0508
+      ]
+    ],
+    "xgboost": [
+      [
+        "ko_stage_historical_win_rate_b",
+        0.1728
+      ],
+      [
+        "key_players_prev_wc_goals_diff",
+        0.1584
+      ],
+      [
+        "ko_stage_historical_win_rate_a",
+        0.1465
+      ],
+      [
+        "fifa_ranking_pos_diff",
+        0.1425
+      ],
+      [
+        "wc_best_stage_diff",
+        0.0987
+      ],
+      [
+        "wc_titles_diff",
+        0.0795
+      ],
+      [
+        "goals_for_group_diff",
+        0.0521
+      ],
+      [
+        "group_strength_score_diff",
+        0.0417
+      ]
+    ]
+  },
+  "train_set_size": 36,
+  "uses_xgboost_native": true,
+  "model_weights": {
+    "logreg": 0.333,
+    "random_forest": 0.333,
+    "xgboost": 0.333
+  },
+  "prediction_accuracy": 0,
+  "prediction_hits": 0,
+  "prediction_misses": 0,
+  "prediction_matches": 0,
+  "comparison_file": "C:\\Users\\HP\\Documents\\mundial2026_predictor\\data\\processed\\SF_comparison.csv",
+  "winner_file": "C:\\Users\\HP\\Documents\\mundial2026_predictor\\data\\processed\\SF_winners.csv",
+  "next_stage": "F"
+}

@@ -29,6 +29,15 @@ MATCHES_REAL = ROOT / "data" / "raw" / "matches_played.csv"
 BRACKET = ROOT / "data" / "raw" / "bracket_map.json"
 PRED_HISTORY = ROOT / "outputs" / "history" / "predictions_history.csv"
 
+FIXTURES_DIR = ROOT / "data" / "processed" 
+def load_predicted_fixtures(stage):
+
+    file = FIXTURES_DIR / f"{stage}_predicted_fixtures.csv"
+
+    if not file.exists():
+        return None
+
+    return pd.read_csv(file)  
 
 def load_real_results():
 
@@ -112,11 +121,19 @@ def main(stage):
         
             print("\nEjecutando modelo...\n")
 
-    report = pipeline.run_stage(
-        stage,
-        validate=False
-    )
+    predicted_fixtures = load_predicted_fixtures(stage)
 
+    if predicted_fixtures is not None:
+
+      print("\nCruces cargados desde predicción:")
+      print(predicted_fixtures[["match_id","team_a","team_b"]])
+
+
+    report = pipeline.run_stage(
+      stage,
+      validate=False
+)
+   
     print("\n==============================")
     print("PREDICCIONES")
     print("==============================\n")

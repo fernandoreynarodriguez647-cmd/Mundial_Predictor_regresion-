@@ -4,7 +4,9 @@ NEXT_STAGE = {
     "R32": "R16",
     "R16": "QF",
     "QF": "SF",
-    "SF": "FINAL",
+    "SF": "F",
+    "3P": None,
+    "F": None,
 }
 
 

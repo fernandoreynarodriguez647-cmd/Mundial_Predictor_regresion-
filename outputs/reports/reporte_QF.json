@@ -14,9 +14,18 @@
         "random_forest": 0.94,
         "xgboost": 0.963
       },
-      "advance_probability_avg_a": 0.963,
+      "advance_probability_avg_a": 0.961,
       "penalty_scenario_probability": null,
-      "predicted_winner": "FRA"
+      "predicted_winner": "FRA",
+      "actual_result": {
+        "score_90": {
+          "a": 2,
+          "b": 0
+        },
+        "went_to_penalties": false,
+        "winner": "FRA"
+      },
+      "hit": true
     },
     {
       "match_id": "M98",
@@ -31,9 +40,18 @@
         "random_forest": 0.529,
         "xgboost": 0.497
       },
-      "advance_probability_avg_a": 0.348,
+      "advance_probability_avg_a": 0.352,
       "penalty_scenario_probability": 0.903,
-      "predicted_winner": "BEL"
+      "predicted_winner": "BEL",
+      "actual_result": {
+        "score_90": {
+          "a": 2,
+          "b": 1
+        },
+        "went_to_penalties": false,
+        "winner": "ESP"
+      },
+      "hit": false
     },
     {
       "match_id": "M99",
@@ -48,9 +66,18 @@
         "random_forest": 0.341,
         "xgboost": 0.723
       },
-      "advance_probability_avg_a": 0.398,
+      "advance_probability_avg_a": 0.355,
       "penalty_scenario_probability": 0.657,
-      "predicted_winner": "ENG"
+      "predicted_winner": "ENG",
+      "actual_result": {
+        "score_90": {
+          "a": 1,
+          "b": 1
+        },
+        "went_to_penalties": false,
+        "winner": "ENG"
+      },
+      "hit": true
     },
     {
       "match_id": "M100",
@@ -65,14 +92,53 @@
         "random_forest": 0.915,
         "xgboost": 0.958
       },
-      "advance_probability_avg_a": 0.957,
+      "advance_probability_avg_a": 0.952,
       "penalty_scenario_probability": null,
-      "predicted_winner": "ARG"
+      "predicted_winner": "ARG",
+      "actual_result": {
+        "score_90": {
+          "a": 1,
+          "b": 1
+        },
+        "went_to_penalties": false,
+        "winner": "ARG"
+      },
+      "hit": true
     }
   ],
   "n_matches_total": 4,
-  "n_matches_validated": 0,
-  "validation_note": "Ningún partido de esta fase tiene resultado real todavía; todas las predicciones están pendientes de confirmación.",
+  "n_matches_validated": 4,
+  "validation_summary": {
+    "logreg": {
+      "accuracy": 0.75,
+      "precision": 1.0,
+      "recall": 0.667,
+      "f1": 0.8
+    },
+    "random_forest": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "xgboost": {
+      "accuracy": 0.5,
+      "precision": 0.667,
+      "recall": 0.667,
+      "f1": 0.667
+    },
+    "score_model": {
+      "MAE": 0.5,
+      "RMSE": 0.707
+    }
+  },
+  "best_classifier": "random_forest",
+  "best_classifier_metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+  },
   "top_features": {
     "logreg": [
       [
@@ -177,17 +243,44 @@
       ]
     ]
   },
+  "decision_support": {
+    "selected_model": "random_forest",
+    "selection_reason": "Mayor Accuracy durante la validación.",
+    "main_factors": [
+      {
+        "feature": "Goles históricos jugadores clave",
+        "importance": 15.24
+      },
+      {
+        "feature": "Historial KO Equipo B",
+        "importance": 12.15
+      },
+      {
+        "feature": "Diferencia Ranking FIFA",
+        "importance": 11.87
+      },
+      {
+        "feature": "Diferencia Puntos FIFA",
+        "importance": 9.99
+      },
+      {
+        "feature": "Historial KO Equipo A",
+        "importance": 5.85
+      }
+    ]
+  },
   "train_set_size": 36,
   "uses_xgboost_native": true,
   "model_weights": {
     "logreg": 0.333,
-    "random_forest": 0.333,
-    "xgboost": 0.333
+    "random_forest": 0.444,
+    "xgboost": 0.222
   },
-  "prediction_accuracy": 0,
-  "prediction_hits": 0,
-  "prediction_misses": 0,
-  "prediction_matches": 0,
+  "metrics_history_file": "outputs\\history\\metrics_history.csv",
+  "prediction_accuracy": 0.75,
+  "prediction_hits": 3,
+  "prediction_misses": 1,
+  "prediction_matches": 4,
   "comparison_file": "C:\\Users\\HP\\Documents\\mundial2026_predictor\\data\\processed\\QF_comparison.csv",
   "winner_file": "C:\\Users\\HP\\Documents\\mundial2026_predictor\\data\\processed\\QF_winners.csv",
   "next_stage": "SF"

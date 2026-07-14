@@ -1,1 +1,5 @@
-
+match_id,team_a,team_b,predicted,official,correct
+M97,FRA,MAR,FRA,FRA,True
+M98,ESP,BEL,BEL,ESP,False
+M99,NOR,ENG,ENG,ENG,True
+M100,ARG,SUI,ARG,ARG,True
