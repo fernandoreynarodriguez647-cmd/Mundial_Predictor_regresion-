@@ -157,20 +157,36 @@ items = [
     ("03", "Ingenieria de Features", "31 variables predictivas disenadas"),
     ("04", "Modelos", "Clasificadores, regresores y ensemble ponderado"),
     ("05", "Pipeline", "Flujo progresivo R32 a FINAL con validacion"),
-    ("06", "Resultados", "Predicciones, accuracy y ranking de modelos"),
-    ("07", "Dashboard", "Visualizacion interactiva con Streamlit"),
-    ("08", "Conclusiones", "Hallazgos, metricas y trabajo futuro"),
+    ("06", "Resultados Globales", "Accuracy y resumen por fase"),
+    ("07", "Resultados por Fase", "R32, R16, QF y SF detallados"),
+    ("08", "Feature Importance", "Variables mas influyentes"),
+    ("09", "Dashboard", "Visualizacion interactiva con Streamlit"),
+    ("10", "Evaluacion", "Metricas y validacion automatica"),
+    ("11", "Conclusiones", "Hallazgos, logros y trabajo futuro"),
 ]
 for i, (num, title, desc) in enumerate(items):
     col = i % 4
     row = i // 4
     x = Inches(0.6 + col * 3.15)
-    y = Inches(1.6 + row * 2.8)
+    y = Inches(1.5 + row * 2.8)
     add_rounded_rect(slide, x, y, Inches(2.9), Inches(2.4), CARD_WHITE, border=1, border_color=SKY_BLUE_LIGHT)
     add_shape(slide, MSO_SHAPE.RECTANGLE, x, y, Inches(2.9), Inches(0.04), SKY_BLUE)
     tb(slide, x + Inches(0.2), y + Inches(0.25), Inches(0.5), Inches(0.4), num, size=22, color=SKY_BLUE, bold=True)
     tb(slide, x + Inches(0.7), y + Inches(0.25), Inches(2), Inches(0.4), title, size=15, color=NAVY, bold=True)
     tb(slide, x + Inches(0.2), y + Inches(0.8), Inches(2.5), Inches(1.2), desc, size=12, color=MEDIUM_TEXT)
+# 3rd row for items 9-11
+if len(items) > 8:
+    for i in range(8, len(items)):
+        col = (i - 8) % 4
+        row = 2
+        x = Inches(0.6 + col * 3.15)
+        y = Inches(1.5 + row * 2.8)
+        num, title, desc = items[i]
+        add_rounded_rect(slide, x, y, Inches(2.9), Inches(2.4), CARD_WHITE, border=1, border_color=SKY_BLUE_LIGHT)
+        add_shape(slide, MSO_SHAPE.RECTANGLE, x, y, Inches(2.9), Inches(0.04), SKY_BLUE)
+        tb(slide, x + Inches(0.2), y + Inches(0.25), Inches(0.5), Inches(0.4), num, size=22, color=SKY_BLUE, bold=True)
+        tb(slide, x + Inches(0.7), y + Inches(0.25), Inches(2), Inches(0.4), title, size=15, color=NAVY, bold=True)
+        tb(slide, x + Inches(0.2), y + Inches(0.8), Inches(2.5), Inches(1.2), desc, size=12, color=MEDIUM_TEXT)
 
 # ═══════════════════════════════════════════════════════════
 # SLIDE 3 – INTRODUCCION
@@ -363,62 +379,229 @@ tb(slide, Inches(1.1), y, Inches(4), Inches(0.6), "Mecanismo de guardia", size=1
 tb(slide, Inches(5.2), y, Inches(7.2), Inches(0.6), "No se puede avanzar si la fase anterior no ha sido validada", size=12, color=MEDIUM_TEXT)
 
 # ═══════════════════════════════════════════════════════════
-# SLIDE 9 – RESULTADOS SEMIFINALES
+# SLIDE 9 – RESUMEN GLOBAL DE RESULTADOS
 # ═══════════════════════════════════════════════════════════
 slide = prs.slides.add_slide(prs.slide_layouts[6])
 set_slide_bg(slide, SOFT_WHITE)
-slide_header(slide, "Resultados - Semifinales (SF)", "Predicciones de la fase actual")
-try:
-    with open("outputs/reports/reporte_SF.json", encoding="utf-8") as f:
-        sf_data = json.load(f)
-    matches = sf_data.get("matches", [])
-except:
-    matches = []
+slide_header(slide, "Resultados Globales", "Accuracy por fase del torneo")
 
-if matches:
-    y = Inches(1.5)
-    for m in matches:
-        add_rounded_rect(slide, Inches(0.5), y, Inches(12.3), Inches(1.1), CARD_WHITE, border=1, border_color=SKY_BLUE_LIGHT)
-        add_shape(slide, MSO_SHAPE.RECTANGLE, Inches(0.5), y, Inches(0.04), Inches(1.1), SKY_BLUE)
-        tb(slide, Inches(0.8), y + Inches(0.08), Inches(4), Inches(0.35), f"{m['team_a']}  vs  {m['team_b']}", size=16, color=NAVY, bold=True)
-        winner = m.get("predicted_winner", "")
-        prob = m.get("advance_probability_avg_a", 0)
-        sc = m.get("predicted_score_90", {})
-        tb(slide, Inches(0.8), y + Inches(0.5), Inches(4), Inches(0.3), f"Ganador: {winner}  |  Prob: {prob:.1%}  |  Score: {sc.get('a',0)}-{sc.get('b',0)}", size=12, color=MEDIUM_TEXT)
-        ap = m.get("advance_probability", {})
-        tb(slide, Inches(5.5), y + Inches(0.15), Inches(1.5), Inches(0.25), f"LR: {ap.get('logreg',0):.0%}", size=11, color=ACCENT_GREEN)
-        tb(slide, Inches(5.5), y + Inches(0.5), Inches(1.5), Inches(0.25), f"RF: {ap.get('random_forest',0):.0%}", size=11, color=SKY_BLUE)
-        tb(slide, Inches(5.5), y + Inches(0.85), Inches(1.5), Inches(0.25), f"XGB: {ap.get('xgboost',0):.0%}", size=11, color=RGBColor(0xE7, 0x4C, 0x3C))
-        actual = m.get("actual_result")
-        if actual:
-            tb(slide, Inches(8), y + Inches(0.2), Inches(3), Inches(0.3), f"Real: {actual.get('winner','')} ({actual.get('score_90',{}).get('a',0)}-{actual.get('score_90',{}).get('b',0)})", size=12, color=ACCENT_GREEN)
-            hit = m.get("hit", False)
-            tb(slide, Inches(8), y + Inches(0.55), Inches(2), Inches(0.3), "ACERTADO" if hit else "FALLADO", size=12, color=ACCENT_GREEN if hit else RGBColor(0xE7, 0x4C, 0x3C), bold=True)
-        else:
-            tb(slide, Inches(8), y + Inches(0.4), Inches(2.5), Inches(0.3), "Pendiente de resultado", size=12, color=LIGHT_TEXT)
-        y += Inches(1.2)
-    # Summary
-    acc = sf_data.get("prediction_accuracy", 0)
-    hits = sf_data.get("prediction_hits", 0)
-    total = sf_data.get("prediction_matches", 0)
-    add_rounded_rect(slide, Inches(0.5), y + Inches(0.1), Inches(12.3), Inches(0.7), NAVY)
-    tb(slide, Inches(0.8), y + Inches(0.15), Inches(11.5), Inches(0.4), f"Accuracy: {acc:.2%}  |  Aciertos: {hits}/{total}  |  Training set: {sf_data.get('train_set_size',0)} partidos historicos", size=13, color=WHITE, bold=True)
-else:
-    add_rounded_rect(slide, Inches(0.5), Inches(1.6), Inches(12.3), Inches(5.3), CARD_WHITE, border=1, border_color=SKY_BLUE_LIGHT)
-    tb(slide, Inches(0.8), Inches(2.0), Inches(11.5), Inches(0.3), "Ejemplo de prediccion:", size=15, color=NAVY, bold=True)
-    tb(slide, Inches(0.8), Inches(2.5), Inches(11), Inches(2.5),
-       "FRA vs ESP  >  Ganador: FRA (87.6%)  |  Score: 1-1  |  Penal: 99.4%\nENG vs ARG  >  Ganador: ARG (80.5%)  |  Score: 1-1  |  Penal: 31.9%\n\nLos pesos del ensemble se recalculan segun accuracy historica.\nLos reportes incluyen feature importance de cada modelo.", size=12, color=MEDIUM_TEXT)
+reports_data = {}
+for stage_name in ["R32", "R16", "QF", "SF"]:
+    try:
+        with open(f"outputs/reports/reporte_{stage_name}.json", encoding="utf-8") as f:
+            reports_data[stage_name] = json.load(f)
+    except:
+        reports_data[stage_name] = None
+
+# Summary cards per phase
+stages_info = [
+    ("R32", "Dieciseisavos", 16),
+    ("R16", "Octavos", 8),
+    ("QF", "Cuartos", 4),
+    ("SF", "Semifinales", 2),
+]
+x_pos = 0.5
+for stage_abbr, stage_name, total in stages_info:
+    data = reports_data.get(stage_abbr)
+    acc = data.get("prediction_accuracy", 0) if data else 0
+    hits = data.get("prediction_hits", 0) if data else 0
+    validated = data.get("n_matches_validated", 0) if data else 0
+    add_rounded_rect(slide, Inches(x_pos), Inches(1.5), Inches(2.95), Inches(1.5), NAVY)
+    tb(slide, Inches(x_pos + 0.1), Inches(1.55), Inches(2.75), Inches(0.35), stage_abbr, size=22, color=WHITE, bold=True, align=PP_ALIGN.CENTER)
+    tb(slide, Inches(x_pos + 0.1), Inches(1.95), Inches(2.75), Inches(0.25), stage_name, size=12, color=SKY_BLUE_LIGHT, align=PP_ALIGN.CENTER)
+    tb(slide, Inches(x_pos + 0.1), Inches(2.3), Inches(2.75), Inches(0.5), f"{hits}/{validated} aciertos  |  {acc:.0%}", size=16, color=WHITE, bold=True, align=PP_ALIGN.CENTER)
+    x_pos += 3.2
+
+# Evolution chart area
+add_rounded_rect(slide, Inches(0.5), Inches(3.3), Inches(12.3), Inches(1.8), CARD_WHITE, border=1, border_color=SKY_BLUE_LIGHT)
+tb(slide, Inches(0.8), Inches(3.5), Inches(5), Inches(0.3), "Evolucion del accuracy por fase", size=15, color=NAVY, bold=True)
+acc_data = []
+stages_ordered = ["R32", "R16", "QF", "SF"]
+for s in stages_ordered:
+    d = reports_data.get(s)
+    acc_data.append(d.get("prediction_accuracy", 0) if d else 0)
+
+# Draw bars
+bar_y = Inches(4.0)
+bar_max_w = Inches(8)
+bar_h = Inches(0.35)
+colors = [SKY_BLUE, ACCENT_TEAL, ACCENT_GREEN, ACCENT_GOLD]
+for i, (s, a) in enumerate(zip(stages_ordered, acc_data)):
+    x_bar = Inches(1.0)
+    y_bar_top = Inches(4.0 + i * 0.45)
+    # label
+    tb(slide, Inches(0.8), y_bar_top + Inches(0.03), Inches(0.8), Inches(0.3), s, size=11, color=NAVY, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+    # bar bg
+    add_rounded_rect(slide, x_bar, y_bar_top, bar_max_w, bar_h, SUBTLE_BG)
+    # bar fill
+    if a > 0:
+        w = int(bar_max_w * a)
+        add_rounded_rect(slide, x_bar, y_bar_top, w, bar_h, colors[i])
+    # text
+    tb(slide, x_bar + Inches(0.1), y_bar_top + Inches(0.02), Inches(2), Inches(0.3), f"{a:.0%}", size=11, color=WHITE if a > 0.3 else NAVY, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+    # details
+    data_i = reports_data.get(s)
+    if data_i:
+        hits_i = data_i.get("prediction_hits", 0)
+        total_i = data_i.get("prediction_matches", 0)
+        tb(slide, x_bar + Inches(2.5), y_bar_top + Inches(0.02), Inches(4), Inches(0.3), f"{hits_i}/{total_i} partidos correctos", size=10, color=MEDIUM_TEXT, anchor=MSO_ANCHOR.MIDDLE)
+
+# Best model per phase
+add_rounded_rect(slide, Inches(0.5), Inches(5.4), Inches(12.3), Inches(1.6), CARD_WHITE, border=1, border_color=SKY_BLUE_LIGHT)
+add_shape(slide, MSO_SHAPE.RECTANGLE, Inches(0.5), Inches(5.4), Inches(12.3), Inches(0.03), SKY_BLUE)
+tb(slide, Inches(0.8), Inches(5.55), Inches(5), Inches(0.3), "Mejor modelo por fase", size=14, color=NAVY, bold=True)
+x_m = 0.8
+for s in stages_ordered:
+    d = reports_data.get(s)
+    if d and "best_classifier" in d:
+        best = d["best_classifier"]
+        best_m = d.get("best_classifier_metrics", {})
+        acc_best = best_m.get("accuracy", 0)
+        tb(slide, Inches(x_m), Inches(5.95), Inches(2.8), Inches(0.25), f"{s}: {best} ({acc_best:.0%})", size=11, color=MEDIUM_TEXT)
+        x_m += 3.1
 
 # ═══════════════════════════════════════════════════════════
-# SLIDE 10 – FEATURE IMPORTANCE
+# SLIDE 10 – DETALLE R32
+# ═══════════════════════════════════════════════════════════
+slide = prs.slides.add_slide(prs.slide_layouts[6])
+set_slide_bg(slide, SOFT_WHITE)
+slide_header(slide, "Resultados - Dieciseisavos (R32)", "16 partidos  |  11 aciertos  |  68.75% accuracy")
+r32 = reports_data.get("R32")
+if r32:
+    matches = r32.get("matches", [])
+    y = Inches(1.4)
+    for i, m in enumerate(matches):
+        if i > 0 and i % 8 == 0:
+            # continue on conceptual level - show compact
+            pass
+        col = i % 2
+        row = i // 2
+        if row > 3:
+            break
+        x_card = Inches(0.5 + col * 6.3)
+        y_card = Inches(1.4 + row * 0.75)
+        hit = m.get("hit", False)
+        bg = RGBColor(0xE8, 0xF5, 0xE9) if hit else RGBColor(0xFD, 0xED, 0xED)
+        add_rounded_rect(slide, x_card, y_card, Inches(6), Inches(0.65), bg, border=1, border_color=ACCENT_GREEN if hit else RGBColor(0xE7, 0x4C, 0x3C))
+        add_shape(slide, MSO_SHAPE.RECTANGLE, x_card, y_card, Inches(0.04), Inches(0.65), ACCENT_GREEN if hit else RGBColor(0xE7, 0x4C, 0x3C))
+        winner = m.get("predicted_winner", "?")
+        actual = m.get("actual_result", {})
+        real_w = actual.get("winner", "?") if actual else "?"
+        sc_pred = m.get("predicted_score_90", {})
+        sc_real = actual.get("score_90", {}) if actual else {}
+        tb(slide, x_card + Inches(0.15), y_card + Inches(0.05), Inches(3), Inches(0.25), f"{m['team_a']} vs {m['team_b']}", size=11, color=NAVY, bold=True)
+        tb(slide, x_card + Inches(0.15), y_card + Inches(0.32), Inches(4), Inches(0.25), f"Pred: {winner} ({sc_pred.get('a',0)}-{sc_pred.get('b',0)})  |  Real: {real_w} ({sc_real.get('a',0) if sc_real else '?'}-{sc_real.get('b',0) if sc_real else '?'})", size=9, color=MEDIUM_TEXT)
+        # hit/miss label
+        tb(slide, x_card + Inches(4.5), y_card + Inches(0.12), Inches(1.2), Inches(0.25), "ACIERTO" if hit else "FALLO", size=9, color=ACCENT_GREEN if hit else RGBColor(0xE7, 0x4C, 0x3C), bold=True, anchor=MSO_ANCHOR.MIDDLE)
+    # Rest of matches compact
+    add_rounded_rect(slide, Inches(0.5), Inches(4.6), Inches(12.3), Inches(2.4), CARD_WHITE, border=1, border_color=SKY_BLUE_LIGHT)
+    tb(slide, Inches(0.8), Inches(4.7), Inches(5), Inches(0.3), "Resto de partidos R32", size=13, color=NAVY, bold=True)
+    compact_text = ""
+    for i, m in enumerate(matches):
+        if i < 8:
+            continue
+        winner = m.get("predicted_winner", "?")
+        actual = m.get("actual_result", {})
+        real_w = actual.get("winner", "?") if actual else "?"
+        hit = m.get("hit", False)
+        mark = "+" if hit else "-"
+        compact_text += f"{m['team_a']}-{m['team_b']}: {winner}>{real_w} ({mark})  "
+    tb(slide, Inches(0.8), Inches(5.1), Inches(11.5), Inches(1.6), compact_text, size=10, color=MEDIUM_TEXT)
+
+# ═══════════════════════════════════════════════════════════
+# SLIDE 11 – DETALLE R16
+# ═══════════════════════════════════════════════════════════
+slide = prs.slides.add_slide(prs.slide_layouts[6])
+set_slide_bg(slide, SOFT_WHITE)
+slide_header(slide, "Resultados - Octavos (R16)", "8 partidos  |  6 aciertos  |  75% accuracy")
+r16 = reports_data.get("R16")
+if r16:
+    matches = r16.get("matches", [])
+    y = Inches(1.5)
+    for i, m in enumerate(matches):
+        col = i % 2
+        row = i // 2
+        x_card = Inches(0.5 + col * 6.3)
+        y_card = Inches(1.5 + row * 1.35)
+        hit = m.get("hit", False)
+        bg = RGBColor(0xE8, 0xF5, 0xE9) if hit else RGBColor(0xFD, 0xED, 0xED)
+        add_rounded_rect(slide, x_card, y_card, Inches(6), Inches(1.15), bg, border=1, border_color=ACCENT_GREEN if hit else RGBColor(0xE7, 0x4C, 0x3C))
+        add_shape(slide, MSO_SHAPE.RECTANGLE, x_card, y_card, Inches(0.04), Inches(1.15), ACCENT_GREEN if hit else RGBColor(0xE7, 0x4C, 0x3C))
+        tb(slide, x_card + Inches(0.15), y_card + Inches(0.08), Inches(3.5), Inches(0.3), f"{m['team_a']} vs {m['team_b']}", size=13, color=NAVY, bold=True)
+        winner = m.get("predicted_winner", "?")
+        prob = m.get("advance_probability_avg_a", 0)
+        sc_pred = m.get("predicted_score_90", {})
+        tb(slide, x_card + Inches(0.15), y_card + Inches(0.4), Inches(3.5), Inches(0.25), f"Pred: {winner} ({sc_pred.get('a',0)}-{sc_pred.get('b',0)})  Prob: {prob:.0%}", size=10, color=MEDIUM_TEXT)
+        actual = m.get("actual_result", {})
+        if actual:
+            real_w = actual.get("winner", "?")
+            sc_real = actual.get("score_90", {})
+            tb(slide, x_card + Inches(0.15), y_card + Inches(0.68), Inches(3.5), Inches(0.25), f"Real: {real_w} ({sc_real.get('a',0)}-{sc_real.get('b',0)})", size=10, color=ACCENT_GREEN)
+        tb(slide, x_card + Inches(4.2), y_card + Inches(0.35), Inches(1.5), Inches(0.3), "ACIERTO" if hit else "FALLO", size=11, color=ACCENT_GREEN if hit else RGBColor(0xE7, 0x4C, 0x3C), bold=True, align=PP_ALIGN.CENTER)
+
+# ═══════════════════════════════════════════════════════════
+# SLIDE 12 – DETALLE QF y SF
+# ═══════════════════════════════════════════════════════════
+slide = prs.slides.add_slide(prs.slide_layouts[6])
+set_slide_bg(slide, SOFT_WHITE)
+slide_header(slide, "Resultados - Cuartos (QF) y Semifinales (SF)", "QF: 4 partidos - 75%  |  SF: 2 partidos - pendientes")
+# QF
+qf = reports_data.get("QF")
+if qf:
+    add_rounded_rect(slide, Inches(0.5), Inches(1.4), Inches(6), Inches(0.4), NAVY)
+    tb(slide, Inches(0.8), Inches(1.42), Inches(5.5), Inches(0.35), "Cuartos de Final (QF)", size=14, color=WHITE, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+    matches = qf.get("matches", [])
+    for i, m in enumerate(matches):
+        y_card = Inches(1.95 + i * 1.2)
+        hit = m.get("hit", False)
+        bg = RGBColor(0xE8, 0xF5, 0xE9) if hit else RGBColor(0xFD, 0xED, 0xED)
+        add_rounded_rect(slide, Inches(0.5), y_card, Inches(6), Inches(1.05), bg, border=1, border_color=ACCENT_GREEN if hit else RGBColor(0xE7, 0x4C, 0x3C))
+        add_shape(slide, MSO_SHAPE.RECTANGLE, Inches(0.5), y_card, Inches(0.04), Inches(1.05), ACCENT_GREEN if hit else RGBColor(0xE7, 0x4C, 0x3C))
+        tb(slide, Inches(0.8), y_card + Inches(0.08), Inches(3.5), Inches(0.25), f"{m['team_a']} vs {m['team_b']}", size=12, color=NAVY, bold=True)
+        winner = m.get("predicted_winner", "?")
+        sc_pred = m.get("predicted_score_90", {})
+        actual = m.get("actual_result", {})
+        real_w = actual.get("winner", "?") if actual else "?"
+        sc_real = actual.get("score_90", {}) if actual else {}
+        tb(slide, Inches(0.8), y_card + Inches(0.38), Inches(3.5), Inches(0.25), f"Pred: {winner} ({sc_pred.get('a',0)}-{sc_pred.get('b',0)})", size=10, color=MEDIUM_TEXT)
+        if actual:
+            tb(slide, Inches(0.8), y_card + Inches(0.65), Inches(3.5), Inches(0.25), f"Real: {real_w} ({sc_real.get('a',0)}-{sc_real.get('b',0)})", size=10, color=ACCENT_GREEN)
+        tb(slide, Inches(4.5), y_card + Inches(0.35), Inches(1.5), Inches(0.3), "ACIERTO" if hit else "FALLO", size=10, color=ACCENT_GREEN if hit else RGBColor(0xE7, 0x4C, 0x3C), bold=True, align=PP_ALIGN.CENTER)
+
+# SF
+sf = reports_data.get("SF")
+if sf:
+    add_rounded_rect(slide, Inches(6.9), Inches(1.4), Inches(6), Inches(0.4), NAVY)
+    tb(slide, Inches(7.2), Inches(1.42), Inches(5.5), Inches(0.35), "Semifinales (SF) - Pendientes", size=14, color=WHITE, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+    matches = sf.get("matches", [])
+    for i, m in enumerate(matches):
+        y_card = Inches(1.95 + i * 1.2)
+        add_rounded_rect(slide, Inches(6.9), y_card, Inches(6), Inches(1.05), CARD_WHITE, border=1, border_color=SKY_BLUE_LIGHT)
+        add_shape(slide, MSO_SHAPE.RECTANGLE, Inches(6.9), y_card, Inches(0.04), Inches(1.05), SKY_BLUE)
+        tb(slide, Inches(7.2), y_card + Inches(0.08), Inches(3.5), Inches(0.25), f"{m['team_a']} vs {m['team_b']}", size=12, color=NAVY, bold=True)
+        winner = m.get("predicted_winner", "?")
+        prob = m.get("advance_probability_avg_a", 0)
+        sc_pred = m.get("predicted_score_90", {})
+        tb(slide, Inches(7.2), y_card + Inches(0.38), Inches(3.5), Inches(0.25), f"Pred: {winner} ({sc_pred.get('a',0)}-{sc_pred.get('b',0)})", size=10, color=MEDIUM_TEXT)
+        tb(slide, Inches(7.2), y_card + Inches(0.65), Inches(3.5), Inches(0.25), f"Prob: {prob:.0%}  |  LR: {m['advance_probability'].get('logreg',0):.0%}  RF: {m['advance_probability'].get('random_forest',0):.0%}  XGB: {m['advance_probability'].get('xgboost',0):.0%}", size=9, color=MEDIUM_TEXT)
+        tb(slide, Inches(10), y_card + Inches(0.35), Inches(2.5), Inches(0.3), "PENDIENTE", size=10, color=LIGHT_TEXT, bold=True, align=PP_ALIGN.CENTER)
+
+# Validation metrics summary below
+add_rounded_rect(slide, Inches(0.5), Inches(6.0), Inches(12.3), Inches(1.0), CARD_WHITE, border=1, border_color=SKY_BLUE_LIGHT)
+tb(slide, Inches(0.8), Inches(6.1), Inches(11.5), Inches(0.3), "Accuracy acumulada del torneo:  R32 68.75%  >  R16 75%  >  QF 75%  >  SF (pendiente)", size=12, color=NAVY, bold=True)
+tb(slide, Inches(0.8), Inches(6.5), Inches(11.5), Inches(0.3), "Total: 20/28 partidos acertados en fases validadas (R32 + R16 + QF)", size=11, color=MEDIUM_TEXT)
+
+# ═══════════════════════════════════════════════════════════
+# SLIDE 13 – FEATURE IMPORTANCE
 # ═══════════════════════════════════════════════════════════
 slide = prs.slides.add_slide(prs.slide_layouts[6])
 set_slide_bg(slide, SOFT_WHITE)
 slide_header(slide, "Importancia de Features", "Variables mas influyentes por modelo")
-try:
-    top_feats = sf_data.get("top_features", {})
-except:
-    top_feats = {}
+top_feats = {}
+for model_key in ["logreg", "random_forest", "xgboost"]:
+    if r32 and model_key in r32.get("top_features", {}):
+        top_feats[model_key] = r32["top_features"][model_key]
+
 if top_feats:
     models_display = {"logreg": "Logistic Regression", "random_forest": "Random Forest", "xgboost": "XGBoost"}
     cols = [0.5, 4.8, 9.1]
