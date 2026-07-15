@@ -6,7 +6,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from dashboard.styles import CSS
-from dashboard.flags import flag
+
 from dashboard import NIGHT_BLUE
 
 st.markdown(CSS, unsafe_allow_html=True)
@@ -45,7 +45,7 @@ for match in report.get("matches", []):
     ta = match.get("team_a","?")
     tb = match.get("team_b","?")
     fila = {
-        "Partido": f'{flag(ta)} {ta} vs {flag(tb)} {tb}',
+        "Partido": f'{ta} vs {tb}',
         "Marcador": f'{score.get("a","-")} - {score.get("b","-")}',
         "Ganador": match.get("predicted_winner", "-"),
         "Prob. A": f"{prob_a:.1%}",
@@ -79,8 +79,8 @@ with col1:
         ta = m.get("team_a", "?")
         tb = m.get("team_b", "?")
         prob_a = m.get("advance_probability_avg_a", 0)
-        prob_rows.append({"Equipo": f"{flag(ta)} {ta}", "Probabilidad": prob_a, "Tipo": "Local"})
-        prob_rows.append({"Equipo": f"{flag(tb)} {tb}", "Probabilidad": round(1 - prob_a, 4), "Tipo": "Visita"})
+        prob_rows.append({"Equipo": f"{ta}", "Probabilidad": prob_a, "Tipo": "Local"})
+        prob_rows.append({"Equipo": f"{tb}", "Probabilidad": round(1 - prob_a, 4), "Tipo": "Visita"})
     if prob_rows:
         df_probs = pd.DataFrame(prob_rows)
         fig = px.bar(
@@ -102,8 +102,8 @@ with col2:
         score = m.get("predicted_score_90", {})
         ta = m.get("team_a", "?")
         tb = m.get("team_b", "?")
-        score_rows.append({"Equipo": f"{flag(ta)} {ta}", "Goles": score.get("a", 0), "Partido": f"{ta} vs {tb}"})
-        score_rows.append({"Equipo": f"{flag(tb)} {tb}", "Goles": score.get("b", 0), "Partido": f"{ta} vs {tb}"})
+        score_rows.append({"Equipo": f"{ta}", "Goles": score.get("a", 0), "Partido": f"{ta} vs {tb}"})
+        score_rows.append({"Equipo": f"{tb}", "Goles": score.get("b", 0), "Partido": f"{ta} vs {tb}"})
     if score_rows:
         df_scores = pd.DataFrame(score_rows)
         fig = px.scatter(

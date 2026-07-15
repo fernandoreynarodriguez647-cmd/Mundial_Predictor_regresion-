@@ -6,7 +6,6 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from dashboard.styles import CSS
-from dashboard.flags import flag
 
 st.markdown(CSS, unsafe_allow_html=True)
 
@@ -62,9 +61,9 @@ for report_file in reports:
         """, unsafe_allow_html=True)
 
         cols = st.columns([2, 1, 2, 1])
-        cols[0].markdown(f"{flag(team_a)} **{team_a}**")
+        cols[0].markdown(f"**{team_a}**")
         cols[1].markdown(f"`{score.get('a','-')} - {score.get('b','-')}`", help="Marcador predicho")
-        cols[2].markdown(f"{flag(team_b)} **{team_b}**")
+        cols[2].markdown(f"**{team_b}**")
 
         if match.get("actual_result", {}).get("winner"):
             cols[3].success(f"✅ {winner}")

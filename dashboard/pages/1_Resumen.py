@@ -7,7 +7,6 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from dashboard.styles import CSS
-from dashboard.flags import flag
 from dashboard import NIGHT_BLUE
 
 st.markdown(CSS, unsafe_allow_html=True)
@@ -86,7 +85,7 @@ if matches:
         team_b = m.get("team_b", "?")
         winner = m.get("predicted_winner", "-")
         cols = st.columns([3, 1, 1])
-        cols[0].markdown(f"{flag(team_a)} **{team_a}** vs {flag(team_b)} **{team_b}**")
+        cols[0].markdown(f"**{team_a}** vs **{team_b}**")
         cols[1].markdown(f"`{score.get('a','-')}-{score.get('b','-')}`")
         cols[2].markdown(f"🏆 {winner}")
 
@@ -152,7 +151,7 @@ if metrics_file.exists():
         match_probs = []
         for m in report.get("matches", []):
             prob = m.get("advance_probability_avg_a", 0)
-            match_probs.append({"Partido": f"{flag(m['team_a'])} {m['team_a']} vs {flag(m['team_b'])} {m['team_b']}", "Prob. Avance A": prob, "Prob. Avance B": 1 - prob})
+            match_probs.append({"Partido": f"{m['team_a']} vs {m['team_b']}", "Prob. Avance A": prob, "Prob. Avance B": 1 - prob})
         if match_probs:
             df_probs = pd.DataFrame(match_probs)
             fig = px.bar(

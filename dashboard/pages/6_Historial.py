@@ -5,7 +5,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from dashboard.styles import CSS
-from dashboard.flags import flag
 from dashboard import NIGHT_BLUE
 
 st.markdown(CSS, unsafe_allow_html=True)
@@ -106,7 +105,7 @@ with col2:
 st.markdown("<br><div class='card'><h3>⚽ Últimas predicciones</h3></div>", unsafe_allow_html=True)
 
 show = latest_data.copy()
-show["partido"] = show["team_a"].apply(flag) + " " + show["team_a"] + " vs " + show["team_b"].apply(flag) + " " + show["team_b"]
+show["partido"] = show["team_a"] + " vs " + show["team_b"]
 show["prediccion"] = show["predicted_score_a"].astype(str) + " - " + show["predicted_score_b"].astype(str)
 if "real_score_a" in show.columns:
     score_a = show["real_score_a"].fillna("-").astype(str)
