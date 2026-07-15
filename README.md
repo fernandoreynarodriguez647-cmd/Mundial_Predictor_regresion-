@@ -25,6 +25,74 @@ A diferencia de un simulador tradicional, este proyecto **no predice todo el tor
 
 ---
 
+# 📊 Resultados Oficiales del Mundial 2026
+
+## 🥇 Dieciseisavos de Final (R32)
+
+| Partido | Equipo A | Marcador | Equipo B | ¿Penales? | Ganador |
+|:-------:|:--------:|:--------:|:--------:|:---------:|:-------:|
+| M73 | RSA | 0 – 1 | **CAN** | No | 🇨🇦 CAN |
+| M74 | GER | 1 – 1 | **PAR** | Sí (4-3) | 🇵🇾 PAR |
+| M75 | NED | 1 – 1 | **MAR** | Sí (3-5) | 🇲🇦 MAR |
+| M76 | BRA | 2 – 1 | JPN | No | 🇧🇷 BRA |
+| M77 | FRA | 3 – 0 | SWE | No | 🇫🇷 FRA |
+| M78 | CIV | 1 – 2 | **NOR** | No | 🇳🇴 NOR |
+| M79 | MEX | 2 – 0 | ECU | No | 🇲🇽 MEX |
+| M80 | ENG | 2 – 1 | COD | No | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG |
+| M81 | USA | 2 – 0 | BIH | No | 🇺🇸 USA |
+| M82 | BEL | 2 – 2 | SEN | No | 🇧🇪 BEL |
+| M83 | POR | 2 – 1 | CRO | No | 🇵🇹 POR |
+| M84 | ESP | 3 – 0 | AUT | No | 🇪🇸 ESP |
+| M85 | SUI | 2 – 0 | ALG | No | 🇨🇭 SUI |
+| M86 | ARG | 1 – 1 | CPV | No | 🇦🇷 ARG |
+| M87 | COL | 1 – 0 | GHA | No | 🇨🇴 COL |
+| M88 | AUS | 1 – 1 | **EGY** | Sí (3-5) | 🇪🇬 EGY |
+
+**Clasificados a Octavos:** 🇨🇦 CAN · 🇵🇾 PAR · 🇲🇦 MAR · 🇧🇷 BRA · 🇫🇷 FRA · 🇳🇴 NOR · 🇲🇽 MEX · 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG · 🇺🇸 USA · 🇧🇪 BEL · 🇵🇹 POR · 🇪🇸 ESP · 🇨🇭 SUI · 🇦🇷 ARG · 🇨🇴 COL · 🇪🇬 EGY
+
+---
+
+## 🥈 Octavos de Final (R16)
+
+| Partido | Equipo A | Marcador | Equipo B | ¿Penales? | Ganador |
+|:-------:|:--------:|:--------:|:--------:|:---------:|:-------:|
+| M89 | PAR | 0 – 1 | **FRA** | No | 🇫🇷 FRA |
+| M90 | CAN | 0 – 3 | **MAR** | No | 🇲🇦 MAR |
+| M91 | BRA | 1 – 2 | **NOR** | No | 🇳🇴 NOR |
+| M92 | MEX | 2 – 3 | **ENG** | No | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG |
+| M93 | POR | 0 – 1 | **ESP** | No | 🇪🇸 ESP |
+| M94 | USA | 1 – 4 | **BEL** | No | 🇧🇪 BEL |
+| M95 | ARG | 3 – 2 | EGY | No | 🇦🇷 ARG |
+| M96 | SUI | 0 – 0 | COL | Sí | 🇨🇭 SUI |
+
+**Clasificados a Cuartos:** 🇫🇷 FRA · 🇲🇦 MAR · 🇳🇴 NOR · 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG · 🇪🇸 ESP · 🇧🇪 BEL · 🇦🇷 ARG · 🇨🇭 SUI
+
+---
+
+## 🥉 Cuartos de Final (QF)
+
+| Partido | Equipo A | Marcador | Equipo B | ¿Penales? | Ganador |
+|:-------:|:--------:|:--------:|:--------:|:---------:|:-------:|
+| M97 | FRA | 2 – 0 | MAR | No | 🇫🇷 FRA |
+| M98 | ESP | 2 – 1 | BEL | No | 🇪🇸 ESP |
+| M99 | NOR | 1 – 1 | **ENG** | No | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG |
+| M100 | ARG | 1 – 1 | **SUI** | No | 🇦🇷 ARG |
+
+**Clasificados a Semifinales:** 🇫🇷 FRA · 🇪🇸 ESP · 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG · 🇦🇷 ARG
+
+---
+
+## 🏅 Semifinales (SF) — Predicciones
+
+| Partido | Equipo A | vs | Equipo B | Ganador Predicho |
+|:-------:|:--------:|:--:|:--------:|:----------------:|
+| M101 | 🇫🇷 FRA | vs | 🇪🇸 ESP | 🇫🇷 FRA |
+| M102 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 ENG | vs | 🇦🇷 ARG | 🇦🇷 ARG |
+
+> ⏳ Partidos aún no disputados. Resultados pendientes de confirmación.
+
+---
+
 # 🧠 Modelos utilizados
 
 ## Clasificación
@@ -284,6 +352,18 @@ Reporte final y métricas
 # 🎯 Objetivo
 
 Desarrollar un sistema reproducible de predicción deportiva basado en Machine Learning que permita simular y evaluar las fases eliminatorias de la Copa Mundial FIFA 2026 utilizando únicamente información oficial disponible en cada etapa del torneo.
+
+---
+
+# 👥 Integrantes del Grupo
+
+| N° | Integrante |
+|:--:|:-----------|
+| 1 | Puerta Culqui Leydi Marlith |
+| 2 | Huaman Huaman Lilian Janet |
+| 3 | Perez Silva Jhohan |
+| 4 | Vin Zumaeta Willy |
+| 5 | Reyna Rodriguez Fernando |
 
 ---
 
