@@ -361,9 +361,9 @@ Desarrollar un sistema reproducible de predicción deportiva basado en Machine L
 |:--:|:-----------|
 | 1 | Puerta Culqui Leydi Marlith |
 | 2 | Huaman Huaman Lilian Janet |
-| 3 | Vin Zumaeta Willy|
-| 4 | Reyna Rodriguez Fernando  |
-| 5 | Perez Silva Jhohan |
+| 3 | Perez Silva Jhohan |
+| 4 | Vin Zumaeta Willy |
+| 5 | Reyna Rodriguez Fernando |
 
 ---
 
